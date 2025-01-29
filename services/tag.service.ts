@@ -1,4 +1,5 @@
 import Tag from '../models/Tag';
+import { HTTP_STATUS, ERROR_MESSAGES } from '../utils/constants';
 
 /**
  * Service to create a new tag.
@@ -7,12 +8,19 @@ import Tag from '../models/Tag';
  * @returns {Promise<Tag>} The newly created tag.
  *
  * @example
- * // Example usage:
  * const newTag = await createTag('Technology');
  */
 export const createTag = async (name: string) => {
-  const newTag = new Tag({ name });
-  return newTag.save();
+  try {
+    const newTag = new Tag({ name });
+    return await newTag.save();
+  } catch (error) {
+    console.error(error);
+    throw {
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: ERROR_MESSAGES.UNKNOWN_ERROR,
+    };
+  }
 };
 
 /**
@@ -23,11 +31,25 @@ export const createTag = async (name: string) => {
  * @returns {Promise<Tag | null>} The updated tag or null if not found.
  *
  * @example
- * // Example usage:
  * const updatedTag = await updateTag('tagId', 'Updated Tag');
  */
 export const updateTag = async (id: string, name: string) => {
-  return Tag.findByIdAndUpdate(id, { name }, { new: true });
+  try {
+    const updatedTag = await Tag.findByIdAndUpdate(id, { name }, { new: true });
+    if (!updatedTag) {
+      throw {
+        status: HTTP_STATUS.NOT_FOUND,
+        message: ERROR_MESSAGES.TAG_NOT_FOUND,
+      };
+    }
+    return updatedTag;
+  } catch (error) {
+    console.error(error);
+    throw {
+      status: error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    };
+  }
 };
 
 /**
@@ -37,11 +59,25 @@ export const updateTag = async (id: string, name: string) => {
  * @returns {Promise<Tag | null>} The deleted tag or null if not found.
  *
  * @example
- * // Example usage:
  * const deletedTag = await deleteTag('tagId');
  */
 export const deleteTag = async (id: string) => {
-  return Tag.findByIdAndDelete(id);
+  try {
+    const deletedTag = await Tag.findByIdAndDelete(id);
+    if (!deletedTag) {
+      throw {
+        status: HTTP_STATUS.NOT_FOUND,
+        message: ERROR_MESSAGES.TAG_NOT_FOUND,
+      };
+    }
+    return deletedTag;
+  } catch (error) {
+    console.error(error);
+    throw {
+      status: error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    };
+  }
 };
 
 /**
@@ -50,11 +86,18 @@ export const deleteTag = async (id: string) => {
  * @returns {Promise<Tag[]>} A list of all tags.
  *
  * @example
- * // Example usage:
  * const tags = await getAllTags();
  */
 export const getAllTags = async () => {
-  return Tag.find({});
+  try {
+    return await Tag.find({});
+  } catch (error) {
+    console.error(error);
+    throw {
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: ERROR_MESSAGES.UNKNOWN_ERROR,
+    };
+  }
 };
 
 /**
@@ -64,9 +107,23 @@ export const getAllTags = async () => {
  * @returns {Promise<Tag | null>} The tag with the specified ID, or null if not found.
  *
  * @example
- * // Example usage:
  * const tag = await getTagById('tagId');
  */
 export const getTagById = async (id: string) => {
-  return Tag.findById(id);
+  try {
+    const tag = await Tag.findById(id);
+    if (!tag) {
+      throw {
+        status: HTTP_STATUS.NOT_FOUND,
+        message: ERROR_MESSAGES.TAG_NOT_FOUND,
+      };
+    }
+    return tag;
+  } catch (error) {
+    console.error(error);
+    throw {
+      status: error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    };
+  }
 };

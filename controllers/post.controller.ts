@@ -6,6 +6,7 @@ import {
   deletePost,
   getPostById,
 } from '../services/post.service';
+import { ERROR_MESSAGES, HTTP_STATUS } from '../utils/constants';
 
 /**
  * Controller to fetch all posts with optional query parameters for sorting and pagination.
@@ -21,11 +22,12 @@ import {
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const posts = await getPosts(req.query, req.query);
-    res.status(200).json(posts);
+    res.status(HTTP_STATUS.OK).json(posts);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error fetching posts', error: error.message });
+    res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      message: 'Error fetching posts',
+      error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    });
   }
 };
 
@@ -44,13 +46,16 @@ export const getPost = async (req: Request, res: Response): Promise<any> => {
   try {
     const post = await getPostById(req.params.id);
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ message: ERROR_MESSAGES.POST_NOT_FOUND });
     }
-    res.status(200).json(post);
+    res.status(HTTP_STATUS.OK).json(post);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error fetching post', error: error.message });
+    res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      message: 'Error fetching post',
+      error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    });
   }
 };
 
@@ -82,7 +87,9 @@ export const addPost = async (req: Request, res: Response): Promise<any> => {
 
     // Ensure image file exists
     if (!req.file) {
-      return res.status(400).json({ message: 'Image file is required.' });
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ message: 'Image file is required.' });
     }
 
     // Convert the image buffer to Base64
@@ -98,11 +105,14 @@ export const addPost = async (req: Request, res: Response): Promise<any> => {
       imageBase64,
     });
 
-    res.status(201).json(post);
+    res.status(HTTP_STATUS.CREATED).json(post);
   } catch (error) {
     res
-      .status(500)
-      .json({ message: 'Error creating post', error: error.message });
+      .status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json({
+        message: 'Error creating post',
+        error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+      });
   }
 };
 
@@ -129,13 +139,18 @@ export const updatePostById = async (
   try {
     const post = await updatePost(req.params.id, req.body);
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ message: ERROR_MESSAGES.POST_NOT_FOUND });
     }
-    res.status(200).json(post);
+    res.status(HTTP_STATUS.OK).json(post);
   } catch (error) {
     res
-      .status(500)
-      .json({ message: 'Error updating post', error: error.message });
+      .status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json({
+        message: 'Error updating post',
+        error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+      });
   }
 };
 
@@ -157,12 +172,17 @@ export const deletePostById = async (
   try {
     const post = await deletePost(req.params.id);
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ message: ERROR_MESSAGES.POST_NOT_FOUND });
     }
-    res.status(200).json({ message: 'Post deleted successfully' });
+    res.status(HTTP_STATUS.OK).json({ message: 'Post deleted successfully' });
   } catch (error) {
     res
-      .status(500)
-      .json({ message: 'Error deleting post', error: error.message });
+      .status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json({
+        message: 'Error deleting post',
+        error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+      });
   }
 };

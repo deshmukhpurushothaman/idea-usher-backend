@@ -6,6 +6,7 @@ import {
   getAllTags,
   getTagById,
 } from '../services/tag.service';
+import { ERROR_MESSAGES, HTTP_STATUS } from '../utils/constants';
 
 /**
  * Controller to fetch all tags.
@@ -21,11 +22,11 @@ import {
 export const getAllTagsController = async (_req: Request, res: Response) => {
   try {
     const tags = await getAllTags();
-    res.status(200).json(tags);
+    res.status(HTTP_STATUS.OK).json(tags);
   } catch (error) {
     res
-      .status(500)
-      .json({ message: 'Error fetching tags', error: error.message });
+      .status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json({ message: ERROR_MESSAGES.UNKNOWN_ERROR });
   }
 };
 
@@ -44,13 +45,15 @@ export const getTag = async (req: Request, res: Response): Promise<any> => {
   try {
     const tag = await getTagById(req.params.id);
     if (!tag) {
-      return res.status(404).json({ message: 'Tag not found' });
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ message: ERROR_MESSAGES.TAG_NOT_FOUND });
     }
-    res.status(200).json(tag);
+    res.status(HTTP_STATUS.OK).json(tag);
   } catch (error) {
     res
-      .status(500)
-      .json({ message: 'Error fetching tag', error: error.message });
+      .status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message || ERROR_MESSAGES.UNKNOWN_ERROR });
   }
 };
 
@@ -73,11 +76,11 @@ export const addTag = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
     const tag = await createTag(name);
-    res.status(201).json(tag);
+    res.status(HTTP_STATUS.CREATED).json(tag);
   } catch (error) {
     res
       .status(500)
-      .json({ message: 'Error creating tag', error: error.message });
+      .json({ message: error.message || ERROR_MESSAGES.UNKNOWN_ERROR });
   }
 };
 
@@ -103,13 +106,16 @@ export const updateTagById = async (
   try {
     const tag = await updateTag(req.params.id, req.body.name);
     if (!tag) {
-      return res.status(404).json({ message: 'Tag not found' });
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ message: ERROR_MESSAGES.TAG_NOT_FOUND });
     }
-    res.status(200).json(tag);
+    res.status(HTTP_STATUS.OK).json(tag);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error updating tag', error: error.message });
+    res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      message: 'Error updating tag',
+      error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    });
   }
 };
 
@@ -131,12 +137,15 @@ export const deleteTagById = async (
   try {
     const tag = await deleteTag(req.params.id);
     if (!tag) {
-      return res.status(404).json({ message: 'Tag not found' });
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ message: ERROR_MESSAGES.TAG_NOT_FOUND });
     }
-    res.status(200).json({ message: 'Tag deleted successfully' });
+    res.status(HTTP_STATUS.OK).json({ message: 'Tag deleted successfully' });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error deleting tag', error: error.message });
+    res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      message: 'Error deleting tag',
+      error: error.message || ERROR_MESSAGES.UNKNOWN_ERROR,
+    });
   }
 };
