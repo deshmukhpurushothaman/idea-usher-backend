@@ -5,7 +5,6 @@ import {
   deleteTag,
   getAllTags,
   getTagById,
-  getTagsByCondition,
 } from '../services/tag.service';
 
 /**
@@ -52,32 +51,6 @@ export const getTag = async (req: Request, res: Response): Promise<any> => {
     res
       .status(500)
       .json({ message: 'Error fetching tag', error: error.message });
-  }
-};
-
-/**
- * Controller to fetch tags based on specified conditions.
- * @param {Request} req - The Express request object, which contains the conditions in the request body.
- * @param {Response} res - The Express response object used to send back the API response.
- *
- * @returns {Promise<void>} Resolves with a list of tags that match the conditions.
- *
- * @example
- * // Example request:
- * POST /tags/condition
- * {
- *   "condition": { "name": "Science" }
- * }
- */
-export const getTagsWithCondition = async (req: Request, res: Response) => {
-  try {
-    const tags = await getTagsByCondition(req.body.condition);
-    res.status(200).json(tags);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error fetching tags by condition',
-      error: error.message,
-    });
   }
 };
 

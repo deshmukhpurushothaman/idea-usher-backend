@@ -5,7 +5,6 @@ import {
   updatePost,
   deletePost,
   getPostById,
-  getPostsByCondition,
 } from '../services/post.service';
 
 /**
@@ -52,32 +51,6 @@ export const getPost = async (req: Request, res: Response): Promise<any> => {
     res
       .status(500)
       .json({ message: 'Error fetching post', error: error.message });
-  }
-};
-
-/**
- * Controller to fetch posts based on specified conditions.
- * @param {Request} req - The Express request object, which contains the conditions in the request body.
- * @param {Response} res - The Express response object used to send back the API response.
- *
- * @returns {Promise<void>} Resolves with a list of posts that match the conditions.
- *
- * @example
- * // Example request:
- * POST /posts/condition
- * {
- *   "condition": { "title": "Math" }
- * }
- */
-export const getPostsWithCondition = async (req: Request, res: Response) => {
-  try {
-    const posts = await getPostsByCondition(req.body.condition);
-    res.status(200).json(posts);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error fetching posts by condition',
-      error: error.message,
-    });
   }
 };
 

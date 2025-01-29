@@ -70,17 +70,3 @@ export const getAllTags = async () => {
 export const getTagById = async (id: string) => {
   return Tag.findById(id);
 };
-
-/**
- * Service to fetch tags based on a specified condition.
- * @param {Object} condition - The condition to filter tags.
- *
- * @returns {Promise<Tag[]>} A list of tags that match the condition.
- *
- * @example
- * // Example usage:
- * const tags = await getTagsByCondition({ name: 'Tech' });
- */
-export const getTagsByCondition = async (condition: any) => {
-  return Tag.find(condition);
-};

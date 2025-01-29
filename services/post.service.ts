@@ -121,17 +121,3 @@ export const deletePost = async (id: string) => {
 export const getPostById = async (id: string) => {
   return Post.findById(id).populate('tags');
 };
-
-/**
- * Service to fetch posts based on a specified condition.
- * @param {Object} condition - The condition to filter posts.
- *
- * @returns {Promise<Post[]>} A list of posts that match the condition.
- *
- * @example
- * // Example usage:
- * const posts = await getPostsByCondition({ title: 'Post Title' });
- */
-export const getPostsByCondition = async (condition: any) => {
-  return Post.find(condition).populate('tags');
-};

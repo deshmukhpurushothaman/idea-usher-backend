@@ -2,7 +2,6 @@ import { Router } from 'express';
 import {
   getAllTagsController,
   getTag,
-  getTagsWithCondition,
   addTag,
   updateTagById,
   deleteTagById,
@@ -28,16 +27,6 @@ router.get('/', getAllTagsController);
  * @returns {Error} 500 - Internal server error
  */
 router.get('/:id', getTag);
-
-/**
- * Route to get tags based on specific conditions.
- * @route POST /tags/condition
- * @group Tags - Operations related to tags
- * @param {Object} body - Filter criteria for tags (e.g., name, etc.)
- * @returns {Array.<Tag>} 200 - Array of tags matching the condition
- * @returns {Error} 500 - Internal server error
- */
-router.post('/condition', getTagsWithCondition);
 
 /**
  * Route to create a new tag.

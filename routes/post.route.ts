@@ -2,7 +2,6 @@ import { Router } from 'express';
 import {
   getAllPosts,
   getPost,
-  getPostsWithCondition,
   addPost,
   updatePostById,
   deletePostById,
@@ -29,16 +28,6 @@ router.get('/', getAllPosts);
  * @returns {Error} 500 - Internal server error
  */
 router.get('/:id', getPost);
-
-/**
- * Route to get posts based on specific conditions.
- * @route POST /posts/condition
- * @group Posts - Operations related to posts
- * @param {Object} body - Filter criteria for posts (e.g., title, tags, etc.)
- * @returns {Array.<Post>} 200 - Array of posts matching the condition
- * @returns {Error} 500 - Internal server error
- */
-router.post('/condition', getPostsWithCondition);
 
 /**
  * Route to create a new post.
