@@ -20,6 +20,19 @@ import Tag from '../models/Tag';
 export const getPosts = async (filters: any, options: any) => {
   const { keyword, tag, sort, page, limit } = options;
 
+  // Validate for additional parameters in options
+  const validKeys = ['keyword', 'tag', 'sort', 'page', 'limit'];
+  const invalidKeys = Object.keys(options).filter(
+    (key) => !validKeys.includes(key)
+  );
+
+  if (invalidKeys.length > 0) {
+    throw {
+      status: 400,
+      message: `Invalid parameters: ${invalidKeys.join(', ')}`,
+    };
+  }
+
   const query: any = {};
 
   // Handle keyword search
