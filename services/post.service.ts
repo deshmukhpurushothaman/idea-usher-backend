@@ -22,17 +22,31 @@ export const getPosts = async (filters: any, options: any) => {
 
   const query: any = {};
 
+  // Handle keyword search
   if (keyword) {
-    query.$or = [
+    const keywordQuery = [
       { title: { $regex: keyword, $options: 'i' } },
       { desc: { $regex: keyword, $options: 'i' } },
     ];
+
+    const keywordMatch = await Post.find({ $or: keywordQuery }).select('_id');
+
+    if (keywordMatch.length > 0) {
+      query.$or = keywordQuery;
+    } else {
+      // If no posts match the keyword, add a condition that will result in no matches
+      query.$or = [{ _id: null }];
+    }
   }
 
+  // Handle tag filtering
   if (tag) {
     const tagObj = await Tag.findOne({ name: tag });
     if (tagObj) {
       query.tags = tagObj._id;
+    } else {
+      // If the tag doesn't exist, set a condition that will result in no posts
+      query.tags = null;
     }
   }
 
