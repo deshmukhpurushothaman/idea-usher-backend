@@ -1,6 +1,22 @@
 import Post from '../models/Post';
 import Tag from '../models/Tag';
 
+/**
+ * Service to fetch posts based on various filters and options.
+ * @param {Object} filters - Filters for the query, including keyword and tag.
+ * @param {Object} options - Options for the query, including sorting, pagination, etc.
+ * @param {string} options.keyword - Search term to filter posts by title or description.
+ * @param {string} options.tag - The tag name to filter posts by.
+ * @param {string} options.sort - The field to sort posts by (e.g., 'createdAt').
+ * @param {string} options.page - The page number for pagination.
+ * @param {string} options.limit - The number of posts per page.
+ *
+ * @returns {Promise<Post[]>} A list of posts that match the query filters and options.
+ *
+ * @example
+ * // Example usage:
+ * const posts = await getPosts({}, { keyword: 'tech', tag: 'AI', sort: 'createdAt', page: '1', limit: '10' });
+ */
 export const getPosts = async (filters: any, options: any) => {
   const { keyword, tag, sort, page, limit } = options;
 
@@ -31,6 +47,20 @@ export const getPosts = async (filters: any, options: any) => {
     .limit(pageSize);
 };
 
+/**
+ * Service to create a new post.
+ * @param {Object} postData - The data of the post to be created.
+ * @param {string} postData.title - The title of the post.
+ * @param {string} postData.desc - The description of the post.
+ * @param {string} postData.imageBase64 - The base64-encoded image of the post.
+ * @param {string[]} postData.tags - The tags associated with the post.
+ *
+ * @returns {Promise<Post>} The newly created post.
+ *
+ * @example
+ * // Example usage:
+ * const newPost = await createPost({ title: 'New Post', desc: 'Description of the post', imageBase64: '...', tags: ['Tech', 'AI'] });
+ */
 export const createPost = async (postData: any) => {
   const { title, desc, imageBase64, tags } = postData;
 
@@ -49,18 +79,59 @@ export const createPost = async (postData: any) => {
   return newPost.save();
 };
 
+/**
+ * Service to update an existing post by ID.
+ * @param {string} id - The ID of the post to be updated.
+ * @param {Object} postData - The updated data for the post.
+ *
+ * @returns {Promise<Post | null>} The updated post or null if not found.
+ *
+ * @example
+ * // Example usage:
+ * const updatedPost = await updatePost('postId', { title: 'Updated Post' });
+ */
 export const updatePost = async (id: string, postData: any) => {
   return Post.findByIdAndUpdate(id, postData, { new: true });
 };
 
+/**
+ * Service to delete a post by ID.
+ * @param {string} id - The ID of the post to be deleted.
+ *
+ * @returns {Promise<Post | null>} The deleted post or null if not found.
+ *
+ * @example
+ * // Example usage:
+ * const deletedPost = await deletePost('postId');
+ */
 export const deletePost = async (id: string) => {
   return Post.findByIdAndDelete(id);
 };
 
+/**
+ * Service to fetch a post by its ID.
+ * @param {string} id - The ID of the post to be fetched.
+ *
+ * @returns {Promise<Post | null>} The post with the specified ID, or null if not found.
+ *
+ * @example
+ * // Example usage:
+ * const post = await getPostById('postId');
+ */
 export const getPostById = async (id: string) => {
   return Post.findById(id).populate('tags');
 };
 
+/**
+ * Service to fetch posts based on a specified condition.
+ * @param {Object} condition - The condition to filter posts.
+ *
+ * @returns {Promise<Post[]>} A list of posts that match the condition.
+ *
+ * @example
+ * // Example usage:
+ * const posts = await getPostsByCondition({ title: 'Post Title' });
+ */
 export const getPostsByCondition = async (condition: any) => {
   return Post.find(condition).populate('tags');
 };
