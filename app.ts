@@ -1,6 +1,6 @@
 import express from 'express';
-// import postRoutes from './routes/postRoutes';
-// import tagRoutes from './routes/tagRoutes';
+import postRoutes from './routes/post.route';
+import tagRoutes from './routes/tag.route';
 import connectDB from './database/connect';
 
 const app = express();
@@ -10,8 +10,8 @@ app.use(express.json());
 connectDB();
 
 // Register routes
-// app.use('/api/posts', postRoutes);
-// app.use('/api/tags', tagRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/tags', tagRoutes);
 
 const PORT = process.env.PORT || 8000;
 
