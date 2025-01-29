@@ -1,9 +1,21 @@
 import { Router } from 'express';
-import { getAllPosts, addPost } from '../controllers/post.controller';
+import {
+  getAllPosts,
+  getPost,
+  getPostsWithCondition,
+  addPost,
+  updatePostById,
+  deletePostById,
+} from '../controllers/post.controller';
+import { uploadSingleImage } from '../middlewares/fileUpload.middleware';
 
 const router = Router();
 
 router.get('/', getAllPosts);
-router.post('/', addPost);
+router.get('/:id', getPost);
+router.post('/condition', getPostsWithCondition);
+router.post('/', uploadSingleImage, addPost);
+router.put('/:id', updatePostById);
+router.delete('/:id', deletePostById);
 
 export default router;

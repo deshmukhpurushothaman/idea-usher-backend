@@ -34,13 +34,33 @@ export const getPosts = async (filters: any, options: any) => {
 export const createPost = async (postData: any) => {
   const { title, desc, imageBase64, tags } = postData;
 
+  // Find tags in the database
   const tagObjects = await Tag.find({ name: { $in: tags } });
+
+  // Create a new post
   const newPost = new Post({
     title,
     desc,
     image: imageBase64,
-    tags: tagObjects.map((tag) => tag._id),
+    tags: tagObjects.map((tag) => tag._id), // Store tag IDs
   });
 
+  // Save the post to the database
   return newPost.save();
+};
+
+export const updatePost = async (id: string, postData: any) => {
+  return Post.findByIdAndUpdate(id, postData, { new: true });
+};
+
+export const deletePost = async (id: string) => {
+  return Post.findByIdAndDelete(id);
+};
+
+export const getPostById = async (id: string) => {
+  return Post.findById(id).populate('tags');
+};
+
+export const getPostsByCondition = async (condition: any) => {
+  return Post.find(condition).populate('tags');
 };
