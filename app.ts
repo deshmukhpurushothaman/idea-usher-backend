@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 // Connect to the database
-// connectDB();
+connectDB();
 
 // Register routes
 // app.use('/api/posts', postRoutes);
